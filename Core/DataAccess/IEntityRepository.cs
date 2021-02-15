@@ -9,7 +9,7 @@ namespace Core.DataAccess
 {                                       //generic constraint
                                         //class: referans tip alabilir.
                                         //new(): newlenebilir olmalı.
-    public interface IEntityRepository<T> where T:class,IEntity,new()
+    public interface IEntityRepository<T> where T : class, IEntity, new()
     {
         List<T> GetAll(Expression<Func<T,bool>> filter=null);
 

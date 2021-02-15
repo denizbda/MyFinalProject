@@ -8,9 +8,14 @@ using System.Text;
 
 namespace Business.Concrete
 {
-    public class CategoryManager(ICategoryDal categoryDal)
-    {   
-        
+    public class CategoryManager : ICategoryService
+    {
+        ICategoryDal _categoryDal;
+
+        public CategoryManager(ICategoryDal categoryDal)
+        {
+            _categoryDal = categoryDal;
+        }
 
         public List<Category> GetAll()
         {   //iş kodları
@@ -19,7 +24,7 @@ namespace Business.Concrete
 
         public Category GetById(int categoryId)
         {
-            
+            return _categoryDal.Get(c => c.CategoryId == categoryId);
         }
     }
 }
