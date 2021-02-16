@@ -14,52 +14,53 @@ namespace Business.Concrete
     public class ProductManager : IProductService
     {
         IProductDal _productDal;
-       
+
         public ProductManager(IProductDal productDal)
         {
             _productDal = productDal;
         }
-        
-        
-	
 
-	
-      
+
+
+
+
+
 
         public IDataResult<List<Product>> GetAll()
         {
-            if (DateTime.Now.Hour==22)
-            {
-                return new ErrorResult();
+            if (DateTime.Now.Hour == 12)
+           {
+               return new ErrorDataResult<List<Product>>(Messages.MaintenanceTime);
             }
 
             // bu bir Expression'dır. bunu kullanabilmek için  IEntityRepository^'da expression sytnax'ı eklenmelidir.
-            return new SuccessDataReuslt<List<Product>>(_productDal.GetAll(), true, "ürünler listelendi");
-                 
+           return new SuccessDataResult<List<Product>>(_productDal.GetAll(), Messages.ProductsListed);
+
 
         }
 
-        public List<Product> GetAllByCategoryId(int id)
+        public IDataResult<List<Product>> GetAllByCategoryId(int id)
         {
-            return _productDal.GetAll(p => p.CategoryId == id);
+            return new SuccessDataResult<List<Product>>(_productDal.GetAll(p => p.CategoryId == id));
         }
 
-        public List<Product> GetAllByUnitPrice(decimal min, decimal max)
+        public  IDataResult<List<Product>> GetAllByUnitPrice(decimal min, decimal max)
         {
-            return _productDal.GetAll(p=>p.UnitPrice>=min && p.UnitPrice<=max);
+            return new SuccessDataResult<List<Product>>(_productDal.GetAll(p => p.UnitPrice >= min && p.UnitPrice <= max));
         }
 
-        public List<ProductDetailDto> GetProductDetails()
+        public IDataResult<List<ProductDetailDto>> GetProductDetails()
         {
-            return _productDal.GetProductDetails();
+            return new SuccessDataResult<List<ProductDetailDto>>(_productDal.GetProductDetails());
         }
 
+        
         public IResult Add(Product product)
         {
-            if (product.ProductName.Length<2)
+            if (product.ProductName.Length < 2)
             {
                 return new ErrorResult(Messages.ProductNameInvalid);
-           
+
             }
             _productDal.Add(product);
 
@@ -68,34 +69,11 @@ namespace Business.Concrete
 
 
 
-        public Product GetById(int productId)
-        {
-            return _productDal.Get(p => p.ProductId == productId);
-        }
-
-        IDataResult<List<Product>> IProductService.GetAll()
-        {
-            throw new NotImplementedException();
-        }
-
-        IDataResult<List<Product>> IProductService.GetAllByCategoryId(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        IDataResult<List<Product>> IProductService.GetAllByUnitPrice(decimal min, decimal max)
-        {
-            throw new NotImplementedException();
-        }
-
-        IDataResult<List<ProductDetailDto>> IProductService.GetProductDetails()
-        {
-            throw new NotImplementedException();
-        }
-
         IDataResult<Product> IProductService.GetById(int productId)
         {
-            throw new NotImplementedException();
+            return new SuccessDataResult<Product>(_productDal.Get(p => p.ProductId == productId));
         }
-    }
+
+
+    }  
 }
